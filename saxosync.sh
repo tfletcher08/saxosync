@@ -1,11 +1,9 @@
 #!/bin/bash
 
-LOCALPATH="/static/web/static/content/sites/NJ/asburypark/app/"
-REMOTEPATH="/376025/web/static/content/NJ/asburypark/app/"
-SITEURL="http://content-static.app.com/"
+LOCALPATH="$1"
+REMOTEPATH="$2"
+SITEURL="$3"
 
-#LOCALPATH="/static/web/static/content/sites/NJ/asburypark/app/e-edition/"
-#REMOTEPATH="/376025/web/static/content/NJ/asburypark/app/e-edition"
 
 REMOTEUSER="sshacs"
 REMOTEHOST="uscpcontent.upload.akamai.com"
@@ -30,7 +28,7 @@ else
 fi
 
 DELETEDFILES=($(grep "*deleting" rsynclog.txt|cut -d ':' -f 2))
-MODIFIEDFILES=($(grep -E "<[fdLDS][.c][.s][.tT][.p][.o][.g][.u][.a][.x]" rsynclog.txt|cut -d ':' -f 2))
+MODIFIEDFILES=($(grep -E "<[fdLDS][.c][.s][.tT][.p][.o][.g][.u][.a][.x]|cL[.c][.s][.tT][.p][.o][.g][.u][.a][.x]" rsynclog.txt|cut -d ':' -f 2))
 
 echo "I will purge ${#DELETEDFILES[@]} deleted files and ${#MODIFIEDFILES[@]} modified files" 
 
