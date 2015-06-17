@@ -9,7 +9,7 @@ REMOTEUSER="sshacs"
 REMOTEHOST="uscpcontent.upload.akamai.com"
 IDENTITYFILE="/home/jenkins/.ssh/id_rsa"
 SSHOPTS="-i $IDENTITYFILE -o StrictHostKeyChecking=no"
-RSYNCOPS=(-rnzl --size-only --out-format='%i:%n' --delete -e "ssh ${SSHOPTS[@]}")
+RSYNCOPS=(-rzl --size-only --out-format='%i:%n' --delete -e "ssh ${SSHOPTS[@]}")
 
 DELETEDFILES=()
 MODIFIEDFILES=()
