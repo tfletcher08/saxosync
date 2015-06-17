@@ -7,7 +7,7 @@ SITEURL="$3"
 
 REMOTEUSER="sshacs"
 REMOTEHOST="uscpcontent.upload.akamai.com"
-IDENTITYFILE="/root/.ssh/id_rsa"
+IDENTITYFILE="/home/jenkins/.ssh/id_rsa"
 SSHOPTS="-i $IDENTITYFILE"
 RSYNCOPS=(-rnzl --size-only --out-format='%i:%n' --delete -e "ssh ${SSHOPTS[@]}")
 
