@@ -1,8 +1,8 @@
 #!/bin/bash
 
-LOCALPATH="$1"
-REMOTEPATH="$2"
-SITEURL="$3"
+LOCALPATH=$1
+REMOTEPATH=$2
+SITEURL=$3
 
 
 REMOTEUSER="sshacs"
