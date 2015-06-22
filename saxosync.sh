@@ -8,6 +8,7 @@ SITEURL=$3
 REMOTEUSER="sshacs"
 REMOTEHOST="uscpcontent.upload.akamai.com"
 IDENTITYFILE="/home/jenkins/.ssh/id_rsa"
+CCUCONFIGFILE="/home/jenkins/purge_config.cfg"
 SSHOPTS="-i $IDENTITYFILE -o StrictHostKeyChecking=no"
 RSYNCOPS=(-rzl --size-only --out-format='%i:%n' --delete -e "ssh ${SSHOPTS[@]}")
 
@@ -23,7 +24,7 @@ rsync "${RSYNCOPS[@]}" $LOCALPATH $REMOTEUSER@$REMOTEHOST:$REMOTEPATH |tee rsync
 if [ -s rsynclog.txt ]; then
     echo "Log exists!"
 else
-    echo "No log file?"
+    echo "No log file. Either no changes exist or there was an error, check job output.."
     exit 1
 fi
 
@@ -32,11 +33,8 @@ MODIFIEDFILES=($(grep -E "<[fdLDS][.c][.s][.tT][.p][.o][.g][.u][.a][.x]|cL[.c][.
 
 echo "I will purge ${#DELETEDFILES[@]} deleted files and ${#MODIFIEDFILES[@]} modified files" 
 
-for i in ${DELETEDFILES[@]}; do
+for i in ${DELETEDFILES[@]} ${MODIFIEDFILES[@]}; do
     echo "Insert curl for purging $SITEURL$i here"
 done
 
 
-for i in ${MODIFIEDFILES[@]}; do
-    echo "Insert curl for purging $SITEURL$i here"
-done
