@@ -26,11 +26,12 @@ echo "Local path: $LOCALPATH"
 echo "Remote path: $REMOTEPATH"
 
 rm rsynclog.txt
+rm purgeoutput.txt
 
 rsync "${RSYNCOPS[@]}" $LOCALPATH $REMOTEUSER@$REMOTEHOST:$REMOTEPATH |tee rsynclog.txt
 
 if [ -s rsynclog.txt ]; then
-    echo "Log exists!"
+    echo "Log exists, continuing."
 else
     echo "No log file. Either no changes exist or there was an error, check job output."
     exit 1
@@ -39,7 +40,13 @@ fi
 DELETEDFILES=($(grep "*deleting" rsynclog.txt|cut -d ':' -f 2))
 MODIFIEDFILES=($(grep -E "<[fdLDS][.c][.s][.tT][.p][.o][.g][.u][.a][.x]|cL[.c][.s][.tT][.p][.o][.g][.u][.a][.x]" rsynclog.txt|cut -d ':' -f 2))
 
-echo "I will purge ${#DELETEDFILES[@]} deleted files and ${#MODIFIEDFILES[@]} modified files" 
+
+if [ ${#DELETEDFILES[@]} -eq 0 ] && [ ${#MODIFIEDFILES[@]} -eq 0 ]; then
+    echo "No files to purge, exiting"
+    exit 0
+fi
+
+echo "I will purge ${#DELETEDFILES[@]} deleted files and ${#MODIFIEDFILES[@]} modified files"
 
 URLLIST=""
 
@@ -55,4 +62,12 @@ URLLIST="{\"objects\":[$URLLIST]}"
 
 echo "Payload being sent to Akamai: $URLLIST"
 
-python ../edgegrid-curl/egcurl --eg-config $CCUCONFIGFILE -sSik -H "Content-Type: application/json" -X POST -d "$URLLIST" https://akab-uttkurwznqtmpbw5-3gz2fnxrham6cu5k.purge.akamaiapis.net/ccu/v2/queues/default
+python ../edgegrid-curl/egcurl --eg-config $CCUCONFIGFILE -sSik -H "Content-Type: application/json" -X POST -d "$URLLIST" https://akab-uttkurwznqtmpbw5-3gz2fnxrham6cu5k.purge.akamaiapis.net/ccu/v2/queues/default | tee purgeoutput.txt
+
+RESPONSE=$(cat purgeoutput.txt|head -1|awk '{print $2}')
+
+if [ "$RESPONSE" -ne "201" ]; then
+    echo "ERROR: Got response $RESPONSE from Akamai, expecting 201."
+    exit 1
+fi
+
