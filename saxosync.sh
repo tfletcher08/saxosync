@@ -11,12 +11,12 @@ if [ -z $LOCALPATH ] || [ -z $REMOTEPATH ] || [ -z $SITEURL ]; then
     exit 1
 fi
 
-REMOTEUSER="sshacs"
-REMOTEHOST="uscpcontent.upload.akamai.com"
+REMOTEUSER=$4
+REMOTEHOST=$5
 IDENTITYFILE="/home/jenkins/.ssh/id_rsa"
 CCUCONFIGFILE="/home/jenkins/purge_config.cfg"
 SSHOPTS="-i $IDENTITYFILE -o StrictHostKeyChecking=no"
-RSYNCOPS=(-rzl --size-only --out-format='%i:%n' --delete -e "ssh ${SSHOPTS[@]}")
+RSYNCOPS=(-rzl --exclude=".*" --exclude=".*/" --size-only --out-format='%i:%n' --delete -e "ssh ${SSHOPTS[@]}")
 
 DELETEDFILES=()
 MODIFIEDFILES=()
