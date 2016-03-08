@@ -16,7 +16,7 @@ REMOTEHOST=$5
 IDENTITYFILE="/home/jenkins/.ssh/id_rsa"
 CCUCONFIGFILE="/home/jenkins/purge_config.cfg"
 SSHOPTS="-i $IDENTITYFILE -o StrictHostKeyChecking=no"
-RSYNCOPS=(-rzl --exclude=".*" --exclude=".*/" --size-only --out-format='%i:%n' --delete -e "ssh ${SSHOPTS[@]}")
+RSYNCOPS=(-rzlc --exclude=".*" --exclude=".*/" --out-format='%i:%n' --delete -e "ssh ${SSHOPTS[@]}")
 
 DELETEDFILES=()
 MODIFIEDFILES=()
